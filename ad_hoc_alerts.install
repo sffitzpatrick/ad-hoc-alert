@@ -1,0 +1,5 @@
+<?php
+
+variable_set('ad_hoc_alerts_text', '');
+variable_set('ad_hoc_alerts_start', '');
+variable_set('ad_hoc_alerts_stop', '');

@@ -54,8 +54,7 @@ function ad_hoc_alerts_init() {
    }
    $now = time();
    $text = variable_get('ad_hoc_alerts_alert_text');;
-  
-   
+     
    if( ($start_time <= $now) && ($end_time >= $now) ) {
        unset($_SESSION['messages']);
        drupal_set_message($text, 'ad-hoc-alert');

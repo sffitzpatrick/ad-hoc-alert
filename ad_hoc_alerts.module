@@ -37,32 +37,33 @@ function ad_hoc_alerts_menu() {
 }
 
 function ad_hoc_alerts_init() {
-    
-   drupal_add_library('system', 'jquery.cookie');
-    
-   $start = variable_get('ad_hoc_alerts_start_date');
-   $end = variable_get('ad_hoc_alerts_end_date');
-   if(is_array($start)){
-	   $start_time = mktime(0, 0, 0, $start['month'], $start['day'], $start['year']);
-   } else {
-	   return;
-   }
-   if(is_array($end)){
-   	   $end_time = mktime(23, 59, 59, $end['month'], $end['day'], $end['year']);
-   } else {
-	   return;
-   }
-   $now = time();
-   $text = variable_get('ad_hoc_alerts_alert_text');;
-  
-   
-   if( ($start_time <= $now) && ($end_time >= $now) ) {
-       unset($_SESSION['messages']);
-       drupal_set_message($text, 'ad-hoc-alert');
-   } else {
-	   variable_set('ad_hoc_alerts_start_date', '');
-	   variable_set('ad_hoc_alerts_end_date', '');
-	   variable_set('ad_hoc_alerts_end_date', '');
-   }
+
+  if($GLOBALS['theme'] == 'libcms_zen') {
+     drupal_add_library('system', 'jquery.cookie');
+     $start = variable_get('ad_hoc_alerts_start_date');
+     $end = variable_get('ad_hoc_alerts_end_date');
+     if(is_array($start)){
+  	   $start_time = mktime(0, 0, 0, $start['month'], $start['day'], $start['year']);
+     } else {
+  	   return;
+     }
+     if(is_array($end)){
+     	   $end_time = mktime(23, 59, 59, $end['month'], $end['day'], $end['year']);
+     } else {
+  	   return;
+     }
+     $now = time();
+     $text = variable_get('ad_hoc_alerts_alert_text');;
+       
+     if( ($start_time <= $now) && ($end_time >= $now) ) {
+         unset($_SESSION['messages']);
+         drupal_set_message($text, 'ad-hoc-alert');
+     } else {
+  	   variable_set('ad_hoc_alerts_start_date', '');
+  	   variable_set('ad_hoc_alerts_end_date', '');
+  	   variable_set('ad_hoc_alerts_end_date', '');
+     }
+  }    
+
 
 }

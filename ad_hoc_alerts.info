@@ -1,4 +1,6 @@
 name = Ad Hoc Alerts
 description = Provides a way for content managers to post alerts to site visitors.
 core = 7.x
-package = Addison Public Library
+package = Other
+scripts[] = ad_hoc_alert.js
+stylesheets[all][] = ad_hoc_alert.css

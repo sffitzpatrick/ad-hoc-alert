@@ -17,15 +17,10 @@ function ad_hoc_alerts_permission() {
  */
 function ad_hoc_alerts_menu() {
   $items = array();
-  // A simple example which defines a page callback and a menu entry.
 
-  // Menu items are defined by placing them in an $items array. The array key
-  // (in this case 'menu_example') is the path that defines the menu router
-  // entry, so the page will be accessible from the URL
-  // example.com/examples/menu_example.
   $items['admin/config/user-interface/alerts'] = array(
     'title' => t('Ad Hoc Alerts'),
-    'description' => 'A way for staff to post general alerts to site visitors.',
+    'description' => 'A way for privileged users to post general alerts to site visitors.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('ad_hoc_alerts_admin'), // An array of arguments to pass to the page callback function. Integer values pass the corresponding URL component.
     //'type' => MENU_NORMAL_ITEM, // One of MENU_NORMAL_ITEM / MENU_CALLBACK / MENU_SUGGESTED_ITEM / MENU_LOCAL_TASK / MENU_DEFAULT_LOCAL_TASK
@@ -33,35 +28,49 @@ function ad_hoc_alerts_menu() {
     'menu_name' => 'management', // Menu to place this item in.
     'access arguments' => array('administer library alerts'),
   );
+
+  $items['ajax/ad-hoc-alert/load/view'] = array(
+    'title' => 'Special Alerts',
+    'type' => MENU_CALLBACK,
+    'page callback' => 'ad_hoc_alerts_load_alerts_content',
+    'access arguments' => array('access content'),
+  );
+
   return $items;
 }
 
-function ad_hoc_alerts_init() {
-    
-   drupal_add_library('system', 'jquery.cookie');
-    
-   $start = variable_get('ad_hoc_alerts_start_date');
-   $end = variable_get('ad_hoc_alerts_end_date');
-   if(is_array($start)){
-	   $start_time = mktime(0, 0, 0, $start['month'], $start['day'], $start['year']);
-   } else {
-	   return;
-   }
-   if(is_array($end)){
-   	   $end_time = mktime(23, 59, 59, $end['month'], $end['day'], $end['year']);
-   } else {
-	   return;
-   }
-   $now = time();
-   $text = variable_get('ad_hoc_alerts_alert_text');;
-     
-   if( ($start_time <= $now) && ($end_time >= $now) ) {
-       unset($_SESSION['messages']);
-       drupal_set_message($text, 'ad-hoc-alert');
-   } else {
-	   variable_set('ad_hoc_alerts_start_date', '');
-	   variable_set('ad_hoc_alerts_end_date', '');
-	   variable_set('ad_hoc_alerts_end_date', '');
-   }
+/**
+ * Loads ad hoc alerts markup
+ *
+ * @return mixed
+ *   returns rendered view or FALSE
+ */
+function ad_hoc_alerts_load_alerts_content() {
+
+  $start = variable_get('ad_hoc_alerts_start_date');
+  $end = variable_get('ad_hoc_alerts_end_date');
+  if(is_array($start)){
+    $start_time = mktime(0, 0, 0, $start['month'], $start['day'], $start['year']);
+  } else {
+    return;
+  }
+  if(is_array($end)){
+      $end_time = mktime(23, 59, 59, $end['month'], $end['day'], $end['year']);
+  } else {
+    return;
+  }
+  $now = time();
+
+  if( ($start_time <= $now) && ($end_time >= $now) ) {
+      $alert = variable_get('ad_hoc_alerts_alert_text');
+      $alert = '<div id="ad-hoc-alert">' . $alert . '</div>';
+      print $alert;
+      exit(0);
+  } else {
+    variable_set('ad_hoc_alerts_start_date', '');
+    variable_set('ad_hoc_alerts_end_date', '');
+    variable_set('ad_hoc_alerts_end_date', '');
+    return FALSE;
+  }
 
 }

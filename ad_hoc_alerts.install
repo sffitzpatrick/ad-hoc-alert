@@ -1,5 +1,8 @@
 <?php
+function ad_hoc_alerts_install() {
 
-variable_set('ad_hoc_alerts_text', '');
-variable_set('ad_hoc_alerts_start', '');
-variable_set('ad_hoc_alerts_stop', '');
+  variable_set('ad_hoc_alerts_text', '');
+  variable_set('ad_hoc_alerts_start', '');
+  variable_set('ad_hoc_alerts_stop', '');
+
+}

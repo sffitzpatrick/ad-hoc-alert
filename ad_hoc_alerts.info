@@ -2,5 +2,5 @@ name = Ad Hoc Alerts
 description = Provides a way for content managers to post alerts to site visitors.
 core = 7.x
 package = Other
-scripts[] = ad_hoc_alert.js
-stylesheets[all][] = ad_hoc_alert.css
+scripts[] = ad_hoc_alerts.js
+stylesheets[all][] = ad_hoc_alerts.css

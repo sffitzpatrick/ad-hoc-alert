@@ -19,7 +19,7 @@ function ad_hoc_alerts_admin() {
   $end_date = variable_get('ad_hoc_alerts_end_date');
   
   if(is_array($end_date)) {
-	  $end_date_default = $start_date;
+	  $end_date_default = $end_date;
 	  $end_date_current = 'Current value: '. $end_date['month'].'/'.$end_date['day'].'/'.$end_date['year'];
   } else {
 	  $end_date_default = '';

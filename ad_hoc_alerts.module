@@ -1,16 +1,16 @@
 <?php
 
- /**
-  * Implementation of hook_permission().
-  */
- function ad_hoc_alerts_permission() {
-   return array(
-     'administer alerts' => array(
-       'title' => t('Administer Ad Hoc Alerts'),
-       'description' => t('Administer Ad Hoc Alerts'),
-     ),
-   );
- }
+/**
+ * Implementation of hook_permission().
+ */
+function ad_hoc_alerts_permission() {
+  return array(
+    'administer alerts' => array(
+      'title' => t('Administer Ad Hoc Alerts'),
+      'description' => t('Administer Ad Hoc Alerts'),
+    ),
+  );
+}
 
 /**
  * Implements hook_menu().
@@ -19,14 +19,19 @@ function ad_hoc_alerts_menu() {
   $items = array();
 
   $items['admin/config/user-interface/alerts'] = array(
-    'title' => t('Ad Hoc Alerts'),
-    'description' => 'A way for privileged users to post general alerts to site visitors.',
+    'title' => 'Ad Hoc Alerts',
+    'description' => 'A way for staff to post general alerts to site visitors.',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('ad_hoc_alerts_admin'), // An array of arguments to pass to the page callback function. Integer values pass the corresponding URL component.
-    //'type' => MENU_NORMAL_ITEM, // One of MENU_NORMAL_ITEM / MENU_CALLBACK / MENU_SUGGESTED_ITEM / MENU_LOCAL_TASK / MENU_DEFAULT_LOCAL_TASK
+    // An array of arguments to pass to the page callback function.
+    // Integer values pass the corresponding URL component.
+    'page arguments' => array('ad_hoc_alerts_admin'),
+    // One of MENU_NORMAL_ITEM / MENU_CALLBACK / MENU_SUGGESTED_ITEM /
+    // MENU_LOCAL_TASK / MENU_DEFAULT_LOCAL_TASK
+    // 'type' => MENU_NORMAL_ITEM,
     'file' => 'ad_hoc_alerts.admin.inc',
-    'menu_name' => 'management', // Menu to place this item in.
-    'access arguments' => array('administer library alerts'),
+    // Menu to place this item in.
+    'menu_name' => 'management',
+    'access arguments' => array('administer alerts'),
   );
 
   $items['ajax/ad-hoc-alert/load/view'] = array(
@@ -46,26 +51,30 @@ function ad_hoc_alerts_menu() {
  *               returns rendered view or FALSE
  */
 function ad_hoc_alerts_load_alerts_content() {
-
   $start = variable_get('ad_hoc_alerts_start_date');
   $end = variable_get('ad_hoc_alerts_end_date');
-  if(is_array($start)){
+  $classes = variable_get('ad_hoc_alerts_alert_css_class');
+
+  if (is_array($start)) {
     $start_time = mktime(0, 0, 0, $start['month'], $start['day'], $start['year']);
   } else {
     return;
   }
-  if(is_array($end)){
-      $end_time = mktime(23, 59, 59, $end['month'], $end['day'], $end['year']);
+  if (is_array($end)) {
+    $end_time = mktime(23, 59, 59, $end['month'], $end['day'], $end['year']);
   } else {
     return;
   }
   $now = time();
 
-  if(($start_time <= $now) && ($end_time >= $now)) {
-      $alert = variable_get('ad_hoc_alerts_alert_text');
-      $alert = '<div id="ad-hoc-alert">' . $alert . '</div>';
-      echo $alert;
-      exit(0);
+  if (($start_time <= $now) && ($end_time >= $now)) {
+    $alert = variable_get('ad_hoc_alerts_alert_text');
+    $alert = '<div class="messages ad-hoc-alert site-alert ' . $classes . '" id="ad-hoc-alert">' . t($alert) . '</div>';
+    $result = array(
+      '#markup' => $alert,
+    );
+
+    return $result;
   } else {
     variable_set('ad_hoc_alerts_start_date', '');
     variable_set('ad_hoc_alerts_end_date', '');
@@ -73,5 +82,35 @@ function ad_hoc_alerts_load_alerts_content() {
 
     return false;
   }
+}
 
+/**
+ * Implements hook_block_info().
+ */
+function ad_hoc_alerts_block_info() {
+  $blocks = array();
+  $blocks['ad_hoc_alert_block'] = array(
+    'info' => t('Ad Hoc Alerts Block'),
+    'region' => 'header',
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ * This hook generates the contents of the blocks themselves.
+ */
+function ad_hoc_alerts_block_view($delta = '') {
+  $block = array();
+  // The $delta parameter tells us which block is being requested.
+  switch ($delta) {
+
+    case 'ad_hoc_alert_block':
+      $block['content'] = ad_hoc_alerts_load_alerts_content();
+      break;
+  }
+
+  return $block;
 }

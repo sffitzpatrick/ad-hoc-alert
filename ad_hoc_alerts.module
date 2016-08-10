@@ -1,16 +1,16 @@
 <?php
 
-/**
- * Implementation of hook_permission().
- */
-function ad_hoc_alerts_permission() {
-  return array('administer library alerts' => array(
-      'title' => t('Administer Library Alerts'),
-      'description' => t('Administer Library Alerts'),
-    ),
-  );
-}
-
+ /**
+  * Implementation of hook_permission().
+  */
+ function ad_hoc_alerts_permission() {
+   return array(
+     'administer alerts' => array(
+       'title' => t('Administer Ad Hoc Alerts'),
+       'description' => t('Administer Ad Hoc Alerts'),
+     ),
+   );
+ }
 
 /**
  * Implements hook_menu().
@@ -40,10 +40,10 @@ function ad_hoc_alerts_menu() {
 }
 
 /**
- * Loads ad hoc alerts markup
+ * Loads ad hoc alerts markup.
  *
  * @return mixed
- *   returns rendered view or FALSE
+ *               returns rendered view or FALSE
  */
 function ad_hoc_alerts_load_alerts_content() {
 
@@ -61,16 +61,17 @@ function ad_hoc_alerts_load_alerts_content() {
   }
   $now = time();
 
-  if( ($start_time <= $now) && ($end_time >= $now) ) {
+  if(($start_time <= $now) && ($end_time >= $now)) {
       $alert = variable_get('ad_hoc_alerts_alert_text');
       $alert = '<div id="ad-hoc-alert">' . $alert . '</div>';
-      print $alert;
+      echo $alert;
       exit(0);
   } else {
     variable_set('ad_hoc_alerts_start_date', '');
     variable_set('ad_hoc_alerts_end_date', '');
     variable_set('ad_hoc_alerts_end_date', '');
-    return FALSE;
+
+    return false;
   }
 
 }
